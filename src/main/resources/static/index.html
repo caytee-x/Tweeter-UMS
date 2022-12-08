@@ -10,19 +10,24 @@
     <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
     <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/webjars/js-cookie/js.cookie.js"></script>
 </head>
 <body>
 <h1>Welcome to Tweeter!</h1>
 
-<div class="container authenticated " style="display:none">
-    <h2>Logged in as: <span id="user"></span></h2>
+
+<div class="container unauthenticated">
+    <a href="/oauth2/authorization/github">Log In With GitHub</a>
+</div>
+<div class="container authenticated" style="display:none">
+    Logged in as: <span id="user"></span>
+</div>
+
     <div>
         <button onClick="logout()" class="btn btn-primary">Logout</button>
     </div>
 </div>
-<div id="container unauthenticated">
-    <h3><a href="/oauth2/authorization/github">Log in with GitHub</a></h3>
-</div>
+
 
 <script type="text/javascript">
     $.get("/user", function(data) {
@@ -39,6 +44,21 @@
         })
         return true;
     }
+
+
+    $.ajaxSetup({
+        beforeSend : function(xhr, settings) {
+            if (settings.type == 'POST' || settings.type == 'PUT'
+                || settings.type == 'DELETE') {
+                if (!(/^http:.*/.test(settings.url) || /^https:.*/
+                    .test(settings.url))) {
+                    // Only send the token to relative URLs i.e. locally.
+                    xhr.setRequestHeader("X-XSRF-TOKEN",
+                        Cookies.get('XSRF-TOKEN'));
+                }
+            }
+        }
+    });
 </script>
 </body>
 </html>
