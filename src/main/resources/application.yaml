@@ -18,4 +18,5 @@ spring:
           github:
             clientId: 122700c4f58dffdbd923
             clientSecret: 57c88848f93ee1cad2883c10cbbd41714a1fbb4d
+            scope: read:user, user:email, user:name
 
